@@ -1,8 +1,5 @@
 const CUSTOMER_SITES = {
-    qiqi: {
-        api: 'https://www.qiqidys.com/api.php/provide/vod',
-        name: '七七资源',
-    },
+    // qiqi 已移除 — API 超时不可用 (2026-08-09)
     hhzy: {
         api: 'https://hhzyapi.com/api.php/provide/vod',
         name: '豪华资源',
