@@ -2,7 +2,19 @@ const CUSTOMER_SITES = {
     qiqi: {
         api: 'https://www.qiqidys.com/api.php/provide/vod',
         name: '七七资源',
-    }
+    },
+    hhzy: {
+        api: 'https://hhzyapi.com/api.php/provide/vod',
+        name: '豪华资源',
+    },
+    jyzy: {
+        api: 'https://jyzyapi.com/provide/vod',
+        name: '金鹰资源',
+    },
+    lzzy: {
+        api: 'https://cj.lziapi.com/api.php/provide/vod',
+        name: '量子资源',
+    },
 };
 
 // 调用全局方法合并

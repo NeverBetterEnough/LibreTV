@@ -178,14 +178,21 @@ app.get('/proxy/:encodedUrl', async (req, res) => {
     
     const makeRequest = async () => {
       try {
+        // 根据目标域名设置合适的请求头（绕过防盗链）
+        const reqHeaders = {
+          'User-Agent': config.userAgent
+        };
+        if (targetUrl.includes('doubanio.com')) {
+          reqHeaders['Referer'] = 'https://movie.douban.com/';
+          reqHeaders['Accept'] = 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8';
+        }
+
         return await axios({
           method: 'get',
           url: targetUrl,
           responseType: 'stream',
           timeout: config.timeout,
-          headers: {
-            'User-Agent': config.userAgent
-          }
+          headers: reqHeaders
         });
       } catch (error) {
         if (retries < maxRetries) {
