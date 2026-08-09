@@ -226,14 +226,23 @@ async function handlePasswordSubmit() {
  * 初始化密码验证系统
  */
 function initPasswordProtection() {
-    // 如果需要强制设置密码，显示警告弹窗
-    if (isPasswordRequired()) {
-        showPasswordModal();
+    // 如果设置了密码，自动完成验证（跳过登录弹窗）
+    if (isPasswordProtected()) {
+        // 自动将密码哈希存入 localStorage，供 proxy-auth 使用
+        const hash = window.__ENV__?.PASSWORD;
+        if (hash) {
+            localStorage.setItem(PASSWORD_CONFIG.localStorageKey, JSON.stringify({
+                verified: true,
+                timestamp: Date.now(),
+                passwordHash: hash
+            }));
+            localStorage.setItem('proxyAuthHash', hash);
+        }
         return;
     }
     
-    // 如果设置了密码但用户未验证，显示密码输入框
-    if (isPasswordProtected() && !isPasswordVerified()) {
+    // 如果没设置密码，保持原有的强制设置提示
+    if (isPasswordRequired()) {
         showPasswordModal();
         return;
     }
