@@ -55,6 +55,10 @@ const doubanPageSize = 16; // 一次显示的项目数量
 
 // 初始化豆瓣功能
 function initDouban() {
+    // 防重复初始化（app.js / password.js / index-page.js 都可能触发）
+    if (window.__doubanInited) return;
+    window.__doubanInited = true;
+
     // 设置豆瓣开关的初始状态
     const doubanToggle = document.getElementById('doubanToggle');
     if (doubanToggle) {
@@ -586,7 +590,10 @@ function resetToHome() {
 }
 
 // 加载豆瓣首页内容
-document.addEventListener('DOMContentLoaded', initDouban);
+// 延迟一个宏任务：等所有 DOMContentLoaded 处理器执行完（app.js 会在首访时先设置 doubanEnabled=true）
+document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(initDouban, 0);
+});
 
 // 显示标签管理模态框
 function showTagManageModal() {
