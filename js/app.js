@@ -4,6 +4,24 @@ const DEFAULT_SELECTED = Object.keys(API_SITES).filter(k => k !== 'testSource' &
 let selectedAPIs = JSON.parse(localStorage.getItem('selectedAPIs') || JSON.stringify(DEFAULT_SELECTED));
 let customAPIs = JSON.parse(localStorage.getItem('customAPIs') || '[]'); // 存储自定义API列表
 
+// === 新增源默认选中 (2026-08-11) ===
+// 老用户 localStorage.selectedAPIs 是固定数组，不会包含后来新增的源。
+// 用 knownAPIs 记录用户已见过的源集合：DEFAULT_SELECTED 中用户没见过的新源
+// 自动并入选中并保存。效果：无论新老用户，新增源都默认勾选；用户手动取消过
+// 的源（已见过的）不会被加回。老用户首次升级（无 knownAPIs）会一次性全选。
+try {
+    const knownAPIs = JSON.parse(localStorage.getItem('knownAPIs') || '[]');
+    const knownSet = new Set(knownAPIs);
+    const newlyAdded = DEFAULT_SELECTED.filter(k => !knownSet.has(k));
+    if (newlyAdded.length > 0) {
+        selectedAPIs = Array.from(new Set([...selectedAPIs, ...newlyAdded]));
+        localStorage.setItem('selectedAPIs', JSON.stringify(selectedAPIs));
+    }
+    localStorage.setItem('knownAPIs', JSON.stringify(DEFAULT_SELECTED));
+} catch (e) {
+    console.error('合并新增源到默认选中失败:', e);
+}
+
 // 添加当前播放的集数索引
 let currentEpisodeIndex = 0;
 // 添加当前视频的所有集数
